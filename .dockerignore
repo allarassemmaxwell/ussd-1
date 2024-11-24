@@ -1,0 +1,57 @@
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignore virtual environments
+venv/
+env/
+*.env
+
+# Ignore log files and databases
+*.log
+*.sqlite3
+
+# Ignore local development settings
+local_settings.py
+
+# Ignore static and media files if served outside of Docker
+static/
+staticfiles/
+media/
+media_cdn/
+mediafiles/
+
+# Ignore temporary files and folders
+*.tmp
+*.swp
+*.swo
+*~
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore Docker files
+.dockerignore
+Dockerfile
+
+# Ignore IDE/project files
+.vscode/
+.idea/
+*.iml
+
+# Ignore any migrations, if necessary (optional)
+main_app/migrations/
+
+# terraform
+terraform/terraform.tfvars
+
+# ebextensions
+.ebextensions/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
