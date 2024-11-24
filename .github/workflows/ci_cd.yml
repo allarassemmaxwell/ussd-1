@@ -1,0 +1,108 @@
+name: Build and Lint Django Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Uncomment for manual trigger
+  # workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.12]
+        database-name:
+          - hello_web
+        database-password:
+          - postgres
+        database-user:
+          - postgres
+        database-host:
+          - 127.0.0.1
+        database-port:
+          - 5432
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: ${{ matrix.database-name }}
+          POSTGRES_USER: ${{ matrix.database-user }}
+          POSTGRES_PASSWORD: ${{ matrix.database-password }}
+        ports:
+          - 5432:5432
+        options:
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.4.0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          cd app
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Setup environment variables for dev
+        env:
+          DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
+          SECRET_KEY: test-secret-key
+          DEBUG: 1
+          DJANGO_ALLOWED_HOSTS: localhost
+        run: |
+          echo "Loading environment variables from .env-dev"
+          export $(cat .env-dev | xargs)
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
+          SECRET_KEY: test-secret-key
+          DEBUG: 1
+          DJANGO_ALLOWED_HOSTS: localhost
+        run: |
+          cd app
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py migrate --run-syncdb
+          python manage.py check
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
+          SECRET_KEY: test-secret-key
+          DEBUG: 1
+          DJANGO_ALLOWED_HOSTS: localhost
+        run: |
+          cd app
+          python manage.py test
+
+      - name: Build the images and start the containers
+        run: |
+          echo "Building the Docker images and starting containers"
+          docker compose -f docker-compose.yml build
+          docker compose -f docker-compose.yml up -d
+
+      - name: Run pylint with pylint_django plugin
+        run: |
+          echo "Running pylint with pylint_django plugin"
+          docker compose -f docker-compose.yml run --rm web \
+          sh -c "export PYTHONPATH=/usr/src && pylint --load-plugins pylint_django app"
+    
+      - name: Stop containers
+        if: always()
+        run: docker compose -f "docker-compose.yml" down --volumes --remove-orphans

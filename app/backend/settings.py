@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'main_app'
+    'main_app',
+    'rest_framework', # pip install djangorestframework
 ]
 
 MIDDLEWARE = [
