@@ -121,6 +121,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# settings.py
+SECURE_SSL_REDIRECT = False  # Prevent Django from redirecting HTTP to HTTPS
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
