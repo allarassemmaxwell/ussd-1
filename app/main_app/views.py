@@ -57,8 +57,8 @@ def generate_ussd_menu():
     """
     menu_text = "Welcome to the USSD service. Please choose an option:\n"
     for box in menu_data['boxes']:
-        menu_text += f"{box['id']}. {box['name']} - {box['price']}\n"
-    menu_text += "6. Withdraw\n"
+        menu_text += f"{box['id']}. {box['name']}\n"
+    # menu_text += "6. Withdraw\n"
     return menu_text
 
 
@@ -83,11 +83,11 @@ def handle_level_one_choice(choice):
     if choice in ['1', '2', '3', '4', '5']:
         selected_box = menu_data['boxes'][int(choice) - 1]
         return HttpResponse(
-            f"CON You selected {selected_box['name']} for {selected_box['price']}."\
-            "\nPlease enter the amount (min KES 20):"
+            f"CON You selected {selected_box['name']}."\
+            "\nPlease enter the amount (min 20, Max 1000):"
         )
-    elif choice == '6':  # Withdraw option
-        return HttpResponse("CON Please enter the amount to withdraw (min KES 20):")
+    # elif choice == '6':  # Withdraw option
+    #     return HttpResponse("CON Please enter the amount to withdraw (min KES 20):")
     else:
         return HttpResponse(
             "CON Invalid choice, please select a valid option.\n"\
@@ -108,8 +108,8 @@ def handle_level_two_input(choice, amount):
     if choice in ['1', '2', '3', '4', '5']:
         selected_box = menu_data['boxes'][int(choice) - 1]
         return HttpResponse(f"END Processing your payment of KES {amount}. Please wait...")
-    elif choice == '6':
-        return HttpResponse(f"END Processing your withdrawal of KES {amount}. Please wait...")
+    # elif choice == '6':
+    #     return HttpResponse(f"END Processing your withdrawal of KES {amount}. Please wait...")
     else:
         return HttpResponse("END An error occurred. Please try again.")
 
