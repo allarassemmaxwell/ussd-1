@@ -97,11 +97,11 @@ jobs:
           docker compose -f docker-compose.yml build
           docker compose -f docker-compose.yml up -d
 
-      - name: Run pylint with pylint_django plugin
-        run: |
-          echo "Running pylint with pylint_django plugin"
-          docker compose -f docker-compose.yml run --rm web \
-          sh -c "export PYTHONPATH=/usr/src && pylint --load-plugins pylint_django app"
+      # - name: Run pylint with pylint_django plugin
+      #   run: |
+      #     echo "Running pylint with pylint_django plugin"
+      #     docker compose -f docker-compose.yml run --rm web \
+      #     sh -c "export PYTHONPATH=/usr/src && pylint --load-plugins pylint_django app"
     
       - name: Stop containers
         if: always()

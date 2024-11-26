@@ -25,6 +25,9 @@ DOMAIN_NAME = os.environ.get("DOMAIN_NAME")
 ENV = os.environ.get("ENV")
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
+USSD_USERNAME = os.environ.get("USSD_USERNAME")
+USSD_API_KEY = os.environ.get("USSD_API_KEY")
+
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 
