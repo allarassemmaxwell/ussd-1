@@ -1,5 +1,5 @@
 """
-This module contains the views for handling USSD requests, user interaction, and integration with 
+This module contains the views for handling USSD requests, user interaction, and integration with
 Africa's Talking API for SMS and payment processing.
 """
 
